@@ -244,6 +244,35 @@ CLASS: ANOMALY | STATUS: ACTIVE
 
 <script>
 
+    const ambient = document.getElementById("ambient");
+const click = document.getElementById("click");
+
+function initAudio() {
+    ambient.volume = 0.3;
+    ambient.play();
+    
+    document.removeEventListener("click", initAudio);
+}
+
+document.addEventListener("click", initAudio);
+
+function playClick() {
+    click.currentTime = 0;
+    click.play();
+}
+
+document.querySelectorAll(".option").forEach(btn => {
+    btn.addEventListener("click", () => {
+        playClick(); 
+    });
+});
+
+function playClick() {
+    const clickSFX = document.getElementById("clickSFX");
+    clickSFX.currentTime = 0; 
+    clickSFX.play();
+}
+
 /* CARACTERES PARA EL EFECTO MATRIX/GLITCH */
 const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*!<>-_\\/[]{}—=+*^?#_";
 
@@ -431,14 +460,14 @@ function renderForms(){
     </div>
 
     <div class="form-row">
-        <div class="form-block" onclick="form('carne')">CARNE</div>
+        <div class="form-block" onclick="playClick(); form('carne')">CARNE</div>
     </div>
     <div class="form-row">
-        <div class="form-block" onclick="form('mente')">MENTE</div>
-        <div class="form-block" onclick="form('sangre')">SANGRE</div>
+        <div class="form-block" onclick="playClick(); form('mente')">MENTE</div>
+        <div class="form-block" onclick="playClick(); form('sangre')">SANGRE</div>
     </div>
     <div class="form-row">
-        <div class="form-block" onclick="form('alma')">ALMA</div>
+        <div class="form-block" onclick="playClick(); form('alma')">ALMA</div>
     </div>
 
     <div id="form-info" style="
@@ -543,4 +572,11 @@ setInterval(()=>{
 </script>
 
 </body>
+    <audio id="ambient" loop>
+  <source src="ambient.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="click">
+  <source src="click.wav" type="audio/wav">
+</audio>
 </html>
