@@ -77,13 +77,25 @@ z-index: 998;
 100%{transform:translate(0)}
 }
 
+/* PRE-BOOT E INICIO */
+#pre-boot{
+position:fixed;
+inset:0;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:18px;
+z-index:1001;
+}
+
 /* BOOT */
 
 #boot{
 position:fixed;
 inset:0;
 background:black;
-display:flex;
+display:none; /* Oculto hasta que se pase el pre-boot */
 justify-content:center;
 align-items:center;
 font-size:16px;
@@ -208,7 +220,16 @@ z-index: 1000;
 
 <body>
 
+<audio id="bgMusic" loop src="ambient.mp3"></audio>
+<audio id="clickSFX" src="click.wav"></audio>
+<audio id="enterSFX" src="enter.wav"></audio>
+<audio id="typingSFX" src="typing.wav"></audio>
+
 <div id="noise"></div>
+
+<div id="pre-boot">
+    <div class="option" id="start-btn" style="animation: blink 1.5s infinite;">[ ACCESS SYSTEM ]</div>
+</div>
 
 <div id="boot"></div>
 
@@ -227,7 +248,7 @@ CLASS: ANOMALY | STATUS: ACTIVE
 <div id="container">
 
 <div id="menu">
-<div class="option active" data-id="kando">KANDO</div>
+<div class="option" data-id="kando">KANDO</div>
 <div class="option" data-id="order">ORDER</div>
 <div class="option" data-id="chaos">CHAOS</div>
 <div class="option" data-id="forms">FOUR FORMS</div>
@@ -243,12 +264,63 @@ CLASS: ANOMALY | STATUS: ACTIVE
 <div id="ghost"></div>
 
 <script>
+/* --- SISTEMA DE SONIDO Y ARRANQUE --- */
+
+// Pantalla de inicio
+document.getElementById("start-btn").addEventListener("click", () => {
+    // Ocultar pantalla de acceso y mostrar terminal de arranque
+    document.getElementById("pre-boot").style.display = "none";
+    document.getElementById("boot").style.display = "flex";
+
+    // Iniciar el click
+    const clickSFX = document.getElementById("clickSFX");
+    if (clickSFX) {
+        clickSFX.currentTime = 0;
+        clickSFX.play().catch(()=>{});
+    }
+
+    // Iniciar la música de ambiente
+    const bgMusic = document.getElementById("bgMusic");
+    if (bgMusic) {
+        bgMusic.volume = 0.3;
+        bgMusic.play().catch(()=>{});
+    }
+
+    // Iniciar sonido de arranque (enter.wav)
+    const enterSFX = document.getElementById("enterSFX");
+    if (enterSFX) {
+        enterSFX.currentTime = 0;
+        enterSFX.play().catch(()=>{});
+    }
+
+    // Iniciar sonido de tipeo (typing.wav)
+    const typingSFX = document.getElementById("typingSFX");
+    if (typingSFX) {
+        typingSFX.currentTime = 0;
+        typingSFX.play().catch(()=>{});
+    }
+
+    // Arrancar la secuencia de texto
+    startBootSequence();
+});
+
+// Click general para el resto de la web
+document.addEventListener("click", (e) => {
+    // Reproducir sonido de click SOLAMENTE si tocan el menú o los bloques (y evitamos que suene doble en el botón de inicio)
+    if ((e.target.classList.contains("option") && e.target.id !== "start-btn") || e.target.classList.contains("form-block")) {
+        const clickSFX = document.getElementById("clickSFX");
+        if (clickSFX) {
+            clickSFX.currentTime = 0;
+            clickSFX.play().catch(()=>{});
+        }
+    }
+});
+
 
 /* CARACTERES PARA EL EFECTO MATRIX/GLITCH */
 const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*!<>-_\\/[]{}—=+*^?#_";
 
-/* BOOT */
-
+/* BOOT SEQUENCE LOGIC */
 const bootText = `
 
 PROJECT_KARMAGEDDON
@@ -263,19 +335,24 @@ ACCESS GRANTED
 const boot = document.getElementById("boot");
 let bootIndex = 0;
 
-const bootTimer = setInterval(()=>{
-boot.textContent = bootText.slice(0, bootIndex);
-bootIndex++;
+function startBootSequence() {
+    const bootTimer = setInterval(()=>{
+        boot.textContent = bootText.slice(0, bootIndex);
+        bootIndex++;
 
-if(bootIndex > bootText.length){
-    clearInterval(bootTimer);
-    setTimeout(()=>{
-        boot.style.display="none";
-        document.getElementById("app").style.display="block";
-        show("kando");
-    },800);
+        if(bootIndex > bootText.length){
+            clearInterval(bootTimer);
+            setTimeout(()=>{
+                boot.style.display="none";
+                document.getElementById("app").style.display="block";
+                // Selecciona "KANDO" automáticamente al entrar
+                const firstOption = document.querySelector('.option[data-id="kando"]');
+                firstOption.classList.add("active");
+                show("kando");
+            },800);
+        }
+    }, 25);
 }
-}, 25);
 
 /* DATA */
 
@@ -333,9 +410,9 @@ Nunca lo elimina.`
 
 /* MENU */
 
-document.querySelectorAll(".option").forEach(btn=>{
+document.querySelectorAll(".option[data-id]").forEach(btn=>{
     btn.addEventListener("click",()=>{
-        document.querySelectorAll(".option")
+        document.querySelectorAll(".option[data-id]")
         .forEach(x=>x.classList.remove("active"));
         btn.classList.add("active");
         show(btn.dataset.id);
