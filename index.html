@@ -221,9 +221,9 @@ z-index: 1000;
 <body>
 
 <audio id="bgMusic" loop src="ambient.mp3"></audio>
-<audio id="clickSFX" src="click.wav"></audio>
-<audio id="enterSFX" src="enter.wav"></audio>
-<audio id="typingSFX" src="typing.wav"></audio>
+<audio id="clickSFX" src="click.mp3"></audio>
+<audio id="enterSFX" src="enter.mp3"></audio>
+<audio id="typingSFX" src="typing.mp3"></audio>
 
 <div id="noise"></div>
 
@@ -286,14 +286,14 @@ document.getElementById("start-btn").addEventListener("click", () => {
         bgMusic.play().catch(()=>{});
     }
 
-    // Iniciar sonido de arranque (enter.wav)
+    // Iniciar sonido de arranque (enter.mp3)
     const enterSFX = document.getElementById("enterSFX");
     if (enterSFX) {
         enterSFX.currentTime = 0;
         enterSFX.play().catch(()=>{});
     }
 
-    // Iniciar sonido de tipeo (typing.wav)
+    // Iniciar sonido de tipeo (typing.mp3)
     const typingSFX = document.getElementById("typingSFX");
     if (typingSFX) {
         typingSFX.currentTime = 0;
