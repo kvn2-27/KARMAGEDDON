@@ -252,7 +252,7 @@ CLASS: ANOMALY | STATUS: ACTIVE
 <div class="option" data-id="order">ORDER</div>
 <div class="option" data-id="chaos">CHAOS</div>
 <div class="option" data-id="forms">FOUR FORMS</div>
-<div class="option" data-id="karmaggedon">KARMAGGEDON</div>
+<div class="option" data-id="karmageddon">KARMAGEDDON</div>
 </div>
 
 <div id="content"></div>
@@ -488,8 +488,8 @@ function show(id){
             renderForms();
             return;
         }
-        if(id==="karmaggedon"){
-            runKarmaggedon();
+        if(id==="karmageddon"){
+            runKarmageddon();
             return;
         }
         typeToElement(data[id], content);
@@ -575,7 +575,7 @@ Es lo que permanece cuando todo lo demás desaparece.`
 
 /* KARMAGEDDON */
 
-function runKarmaggedon(){
+function runKarmageddon(){
     let stability = 100;
     
     content.textContent = "REALITY STABILITY\n\n100%";
